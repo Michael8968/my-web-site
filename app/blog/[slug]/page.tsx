@@ -75,32 +75,32 @@ const createMdxComponents = () => ({
   h1: ({ id, ...props }: any) => (
     <h1
       id={id}
-      className="mb-4 mt-8 scroll-mt-20 text-4xl font-bold"
+      className="mb-4 mt-8 scroll-mt-[84px] text-3xl font-bold"
       {...props}
     />
   ),
   h2: ({ id, ...props }: any) => (
     <h2
       id={id}
-      className="mb-3 mt-6 scroll-mt-20 text-3xl font-semibold"
+      className="mb-3 mt-6 scroll-mt-[84px] text-2xl font-semibold"
       {...props}
     />
   ),
   h3: ({ id, ...props }: any) => (
     <h3
       id={id}
-      className="mb-2 mt-4 scroll-mt-20 text-2xl font-semibold"
+      className="mb-2 mt-4 scroll-mt-[84px] text-xl font-semibold"
       {...props}
     />
   ),
   h4: ({ id, ...props }: any) => (
     <h4
       id={id}
-      className="mb-2 mt-4 scroll-mt-20 text-xl font-semibold"
+      className="mb-2 mt-4 scroll-mt-[84px] text-lg font-semibold"
       {...props}
     />
   ),
-  p: (props: any) => <p className="mb-4 leading-7" {...props} />,
+  p: (props: any) => <p className="mb-4 text-sm leading-6" {...props} />,
   a: (props: any) => (
     <a
       className="text-blue-600 hover:underline dark:text-blue-400"
@@ -121,7 +121,7 @@ const createMdxComponents = () => ({
     if (!props.className) {
       return (
         <code
-          className="rounded bg-gray-100 px-1.5 py-0.5 text-sm dark:bg-gray-800"
+          className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-gray-800"
           {...props}
         />
       );
@@ -167,8 +167,8 @@ export default async function BlogPostPage({
       <div className="mx-auto flex max-w-7xl gap-8">
         <article className="max-w-4xl flex-1">
           <header className="mb-8">
-            <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
-            <div className="mb-4 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <h1 className="mb-4 text-3xl font-bold">{post.title}</h1>
+            <div className="mb-4 flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
               <time dateTime={post.date}>{formatDate(post.date)}</time>
               {post.updated && (
                 <>
@@ -187,7 +187,7 @@ export default async function BlogPostPage({
                   <a
                     key={tag}
                     href={`/tag/${tag}`}
-                    className="rounded-full bg-gray-100 px-3 py-1 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
                   >
                     {tag}
                   </a>
@@ -203,7 +203,7 @@ export default async function BlogPostPage({
             </div>
           )}
 
-          <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="prose dark:prose-invert max-w-none">
             {post.content && post.content.trim() ? (
               <MDXRemote
                 source={post.content}

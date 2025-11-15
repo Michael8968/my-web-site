@@ -3,15 +3,22 @@ import OpenAI from 'openai';
 
 // 强制动态渲染
 export const dynamic = 'force-dynamic';
+// 设置最大执行时间为 60 秒（用于生成完整文章）
+export const maxDuration = 60;
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL,
+  timeout: 50000, // 50 秒超时
 });
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  
   try {
     const { title, description, tags, type } = await request.json();
+
+    console.log(`[AI Generate] 开始生成，类型: ${type}, 标题: ${title || '未指定'}`);
 
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -70,8 +77,12 @@ export async function POST(request: NextRequest) {
 请直接输出描述：`;
     }
 
+    console.log(`[AI Generate] 开始调用 OpenAI API...`);
+    const apiStartTime = Date.now();
+
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    //   model: 'gpt-4o-mini',
+      model: 'deepseek-chat',
       messages: [
         {
           role: 'system',
@@ -87,25 +98,48 @@ export async function POST(request: NextRequest) {
       max_tokens: type === 'full' ? 3000 : type === 'outline' ? 1500 : 300,
     });
 
+    const apiDuration = Date.now() - apiStartTime;
+    console.log(`[AI Generate] OpenAI API 调用完成，耗时: ${apiDuration}ms`);
+
     const content = completion.choices[0]?.message?.content || '';
 
     if (!content) {
+      console.error('[AI Generate] OpenAI 返回空内容');
       return NextResponse.json(
         { error: 'AI 生成失败，请重试' },
         { status: 500 }
       );
     }
 
+    const totalDuration = Date.now() - startTime;
+    console.log(`[AI Generate] 生成完成，总耗时: ${totalDuration}ms, 内容长度: ${content.length}`);
+
     return NextResponse.json({ content });
   } catch (error) {
-    console.error('Error generating content:', error);
-    const errorMessage =
-      error instanceof Error ? error.message : '生成内容失败';
+    const totalDuration = Date.now() - startTime;
+    console.error(`[AI Generate] 错误 (耗时: ${totalDuration}ms):`, error);
+    
+    let errorDetails: string | undefined;
+
+    if (error instanceof Error) {
+      // 检查是否是超时错误
+      if (error.message.includes('timeout') || error.message.includes('timed out')) {
+        errorDetails = `请求超时 (${totalDuration}ms)。可能是 OpenAI API 响应过慢或网络连接问题。`;
+      } else if (error.message.includes('ECONNREFUSED') || error.message.includes('ENOTFOUND')) {
+        errorDetails = '无法连接到 OpenAI API。请检查网络连接和 API 配置。';
+      } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        errorDetails = 'OpenAI API Key 无效或已过期。';
+      } else if (error.message.includes('429')) {
+        errorDetails = 'OpenAI API 请求频率过高，请稍后重试。';
+      } else {
+        errorDetails = error.message;
+      }
+    }
+
     return NextResponse.json(
       {
         error: '生成内容失败',
-        details:
-          process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+        details: process.env.NODE_ENV === 'development' ? errorDetails : undefined,
       },
       { status: 500 }
     );

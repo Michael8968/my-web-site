@@ -43,7 +43,7 @@ export function CodeBlock({
       </div>
       {language && (
         <div className="absolute left-2 top-2 z-10">
-          <span className="rounded bg-gray-800 px-2 py-1 text-xs text-white dark:bg-gray-700">
+          <span className="rounded bg-gray-800/70 px-2 py-1 text-xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 dark:bg-gray-700/70">
             {language}
           </span>
         </div>

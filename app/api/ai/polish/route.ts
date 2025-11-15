@@ -3,10 +3,13 @@ import OpenAI from 'openai';
 
 // 强制动态渲染
 export const dynamic = 'force-dynamic';
+// 设置最大执行时间为 60 秒（用于润色长文章）
+export const maxDuration = 60;
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL,
+  timeout: 50000, // 50 秒超时
 });
 
 export async function POST(request: NextRequest) {
@@ -75,7 +78,8 @@ ${content}
     }
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    //   model: 'gpt-4o-mini',
+      model: "deepseek-chat",
       messages: [
         {
           role: 'system',
