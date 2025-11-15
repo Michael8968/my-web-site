@@ -9,7 +9,11 @@ interface CodeBlockProps {
   [key: string]: any;
 }
 
-export function CodeBlock({ children, className = '', ...props }: CodeBlockProps) {
+export function CodeBlock({
+  children,
+  className = '',
+  ...props
+}: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const codeString = String(children).replace(/\n$/, '');
 
@@ -23,31 +27,33 @@ export function CodeBlock({ children, className = '', ...props }: CodeBlockProps
   const language = className?.replace('language-', '') || '';
 
   return (
-    <div className="relative group my-4">
-      <div className="absolute top-2 right-2 z-10">
+    <div className="group relative my-4">
+      <div className="absolute right-2 top-2 z-10">
         <button
           onClick={handleCopy}
-          className="p-2 bg-gray-800 dark:bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity"
+          className="rounded bg-gray-800 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-gray-700"
           aria-label="复制代码"
         >
           {copied ? (
-            <Check className="w-4 h-4" />
+            <Check className="h-4 w-4" />
           ) : (
-            <Copy className="w-4 h-4" />
+            <Copy className="h-4 w-4" />
           )}
         </button>
       </div>
       {language && (
-        <div className="absolute top-2 left-2 z-10">
-          <span className="px-2 py-1 text-xs bg-gray-800 dark:bg-gray-700 text-white rounded">
+        <div className="absolute left-2 top-2 z-10">
+          <span className="rounded bg-gray-800 px-2 py-1 text-xs text-white dark:bg-gray-700">
             {language}
           </span>
         </div>
       )}
-      <pre className={`${className} p-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto`} {...props}>
+      <pre
+        className={`${className} overflow-x-auto rounded-lg bg-gray-100 p-4 dark:bg-gray-800`}
+        {...props}
+      >
         <code className={className}>{children}</code>
       </pre>
     </div>
   );
 }
-

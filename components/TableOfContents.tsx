@@ -48,8 +48,8 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   return (
     <nav className="sticky top-20 hidden lg:block">
-      <div className="border-l-2 border-gray-200 dark:border-gray-800 pl-4">
-        <h3 className="text-sm font-semibold mb-4 text-gray-900 dark:text-gray-100">
+      <div className="border-l-2 border-gray-200 pl-4 dark:border-gray-800">
+        <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-gray-100">
           目录
         </h3>
         <ul className="space-y-2">
@@ -63,14 +63,17 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                   heading.level === 3 && 'pl-4',
                   heading.level === 4 && 'pl-8',
                   activeId === heading.id
-                    ? 'text-blue-600 dark:text-blue-400 font-medium'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'font-medium text-blue-600 dark:text-blue-400'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
                 )}
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById(heading.id);
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    });
                   }
                 }}
               >
@@ -83,4 +86,3 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     </nav>
   );
 }
-

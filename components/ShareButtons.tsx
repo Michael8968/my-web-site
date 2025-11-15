@@ -10,11 +10,7 @@ interface ShareButtonsProps {
   description?: string;
 }
 
-export function ShareButtons({
-  title,
-  url,
-  description,
-}: ShareButtonsProps) {
+export function ShareButtons({ title, url, description }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const fullUrl = typeof window !== 'undefined' ? window.location.href : url;
 
@@ -55,43 +51,42 @@ export function ShareButtons({
   };
 
   return (
-    <div className="flex items-center gap-2 pt-6 border-t border-gray-200 dark:border-gray-800">
-      <span className="text-sm text-gray-600 dark:text-gray-400 mr-2">
+    <div className="flex items-center gap-2 border-t border-gray-200 pt-6 dark:border-gray-800">
+      <span className="mr-2 text-sm text-gray-600 dark:text-gray-400">
         分享：
       </span>
       <button
         onClick={() => handleShare('twitter')}
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="rounded-full p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="分享到 Twitter"
       >
-        <Twitter className="w-5 h-5" />
+        <Twitter className="h-5 w-5" />
       </button>
       <button
         onClick={() => handleShare('facebook')}
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="rounded-full p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="分享到 Facebook"
       >
-        <Facebook className="w-5 h-5" />
+        <Facebook className="h-5 w-5" />
       </button>
       <button
         onClick={() => handleShare('linkedin')}
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="rounded-full p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="分享到 LinkedIn"
       >
-        <Linkedin className="w-5 h-5" />
+        <Linkedin className="h-5 w-5" />
       </button>
       <button
         onClick={handleCopyLink}
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="rounded-full p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="复制链接"
       >
         {copied ? (
-          <Check className="w-5 h-5 text-green-600" />
+          <Check className="h-5 w-5 text-green-600" />
         ) : (
-          <Link2 className="w-5 h-5" />
+          <Link2 className="h-5 w-5" />
         )}
       </button>
     </div>
   );
 }
-

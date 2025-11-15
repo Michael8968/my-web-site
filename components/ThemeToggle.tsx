@@ -9,8 +9,12 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const storedTheme = localStorage.getItem('theme') as
+      | 'light'
+      | 'dark'
+      | null;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+      .matches
       ? 'dark'
       : 'light';
     const initialTheme = storedTheme || systemTheme;
@@ -37,10 +41,10 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="切换主题"
       >
-        <Sun className="w-5 h-5" />
+        <Sun className="h-5 w-5" />
       </button>
     );
   }
@@ -48,15 +52,14 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
       aria-label="切换主题"
     >
       {theme === 'light' ? (
-        <Moon className="w-5 h-5" />
+        <Moon className="h-5 w-5" />
       ) : (
-        <Sun className="w-5 h-5" />
+        <Sun className="h-5 w-5" />
       )}
     </button>
   );
 }
-

@@ -83,18 +83,18 @@ export function Comments({ slug }: CommentsProps) {
 
   if (loading) {
     return (
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold mb-6">评论</h2>
+      <div className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-800">
+        <h2 className="mb-6 text-2xl font-bold">评论</h2>
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
-      <h2 className="text-2xl font-bold mb-6">评论 ({comments.length})</h2>
+    <div className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-800">
+      <h2 className="mb-6 text-2xl font-bold">评论 ({comments.length})</h2>
 
       {/* 评论表单 */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-4">
@@ -104,7 +104,7 @@ export function Comments({ slug }: CommentsProps) {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="您的姓名"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
             disabled={submitting}
           />
         </div>
@@ -114,31 +114,31 @@ export function Comments({ slug }: CommentsProps) {
             onChange={(e) => setContent(e.target.value)}
             placeholder="写下您的评论..."
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
             disabled={submitting}
           />
         </div>
         {error && (
-          <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
+          <div className="text-sm text-red-600 dark:text-red-400">{error}</div>
         )}
         {success && (
-          <div className="text-green-600 dark:text-green-400 text-sm">
+          <div className="text-sm text-green-600 dark:text-green-400">
             {success}
           </div>
         )}
         <button
           type="submit"
           disabled={submitting}
-          className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
               提交中...
             </>
           ) : (
             <>
-              <Send className="w-4 h-4" />
+              <Send className="h-4 w-4" />
               提交评论
             </>
           )}
@@ -148,16 +148,16 @@ export function Comments({ slug }: CommentsProps) {
       {/* 评论列表 */}
       <div className="space-y-6">
         {comments.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+          <p className="py-8 text-center text-gray-500 dark:text-gray-400">
             暂无评论，成为第一个评论者吧！
           </p>
         ) : (
           comments.map((comment) => (
             <div
               key={comment.id}
-              className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
+              className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900"
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex items-center justify-between">
                 <span className="font-semibold">{comment.author}</span>
                 <time
                   dateTime={comment.createdAt}
@@ -166,7 +166,7 @@ export function Comments({ slug }: CommentsProps) {
                   {formatDate(comment.createdAt)}
                 </time>
               </div>
-              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
                 {comment.content}
               </p>
             </div>
@@ -176,4 +176,3 @@ export function Comments({ slug }: CommentsProps) {
     </div>
   );
 }
-

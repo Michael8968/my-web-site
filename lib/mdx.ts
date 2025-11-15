@@ -88,7 +88,7 @@ async function getPostBySlugFromDB(slug: string): Promise<PostType | null> {
 export async function getAllPosts(): Promise<PostType[]> {
   // 优先从数据库获取
   const dbPosts = await getAllPostsFromDB();
-  
+
   // 如果数据库有文章，直接返回
   if (dbPosts.length > 0) {
     return dbPosts;
@@ -96,7 +96,7 @@ export async function getAllPosts(): Promise<PostType[]> {
 
   // 否则从文件系统读取（向后兼容）
   const blogDirectory = path.join(contentDirectory, 'blog');
-  
+
   if (!fs.existsSync(blogDirectory)) {
     return [];
   }
@@ -145,7 +145,7 @@ export async function getAllPosts(): Promise<PostType[]> {
 // 同步版本（用于向后兼容，但优先使用异步版本）
 export function getAllPostsSync(): PostType[] {
   const blogDirectory = path.join(contentDirectory, 'blog');
-  
+
   if (!fs.existsSync(blogDirectory)) {
     return [];
   }
@@ -198,13 +198,13 @@ export async function getPostBySlug(slug: string): Promise<PostType | null> {
 
   // 否则从文件系统读取（向后兼容）
   const blogDirectory = path.join(contentDirectory, 'blog');
-  
+
   if (!fs.existsSync(blogDirectory)) {
     return null;
   }
 
   const fileNames = fs.readdirSync(blogDirectory);
-  
+
   for (const fileName of fileNames) {
     if (!fileName.endsWith('.mdx') && !fileName.endsWith('.md')) {
       continue;
@@ -215,7 +215,7 @@ export async function getPostBySlug(slug: string): Promise<PostType | null> {
     const { data, content } = matter(fileContents);
 
     const postSlug = data.slug || fileName.replace(/\.(mdx|md)$/, '');
-    
+
     if (postSlug === slug) {
       const stats = readingTime(content);
       const readingTimeText = `${Math.ceil(stats.minutes)} min`;
@@ -249,7 +249,7 @@ export async function getPostsByTag(tag: string): Promise<PostType[]> {
 export async function getAllTags(): Promise<string[]> {
   const allPosts = await getAllPosts();
   const tagsSet = new Set<string>();
-  
+
   allPosts.forEach((post) => {
     post.tags?.forEach((tag) => tagsSet.add(tag));
   });
@@ -258,7 +258,10 @@ export async function getAllTags(): Promise<string[]> {
 }
 
 // 获取分页文章
-export async function getPaginatedPosts(page: number = 1, pageSize: number = 10): Promise<{
+export async function getPaginatedPosts(
+  page: number = 1,
+  pageSize: number = 10
+): Promise<{
   posts: PostType[];
   total: number;
   totalPages: number;
@@ -276,4 +279,3 @@ export async function getPaginatedPosts(page: number = 1, pageSize: number = 10)
     totalPages,
   };
 }
-

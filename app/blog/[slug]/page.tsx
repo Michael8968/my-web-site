@@ -73,29 +73,47 @@ export async function generateMetadata({
 // MDX 组件映射
 const createMdxComponents = () => ({
   h1: ({ id, ...props }: any) => (
-    <h1 id={id} className="text-4xl font-bold mt-8 mb-4 scroll-mt-20" {...props} />
+    <h1
+      id={id}
+      className="mb-4 mt-8 scroll-mt-20 text-4xl font-bold"
+      {...props}
+    />
   ),
   h2: ({ id, ...props }: any) => (
-    <h2 id={id} className="text-3xl font-semibold mt-6 mb-3 scroll-mt-20" {...props} />
+    <h2
+      id={id}
+      className="mb-3 mt-6 scroll-mt-20 text-3xl font-semibold"
+      {...props}
+    />
   ),
   h3: ({ id, ...props }: any) => (
-    <h3 id={id} className="text-2xl font-semibold mt-4 mb-2 scroll-mt-20" {...props} />
+    <h3
+      id={id}
+      className="mb-2 mt-4 scroll-mt-20 text-2xl font-semibold"
+      {...props}
+    />
   ),
   h4: ({ id, ...props }: any) => (
-    <h4 id={id} className="text-xl font-semibold mt-4 mb-2 scroll-mt-20" {...props} />
+    <h4
+      id={id}
+      className="mb-2 mt-4 scroll-mt-20 text-xl font-semibold"
+      {...props}
+    />
   ),
   p: (props: any) => <p className="mb-4 leading-7" {...props} />,
   a: (props: any) => (
     <a
-      className="text-blue-600 dark:text-blue-400 hover:underline"
+      className="text-blue-600 hover:underline dark:text-blue-400"
       target="_blank"
       rel="noopener noreferrer"
       {...props}
     />
   ),
-  ul: (props: any) => <ul className="list-disc list-inside mb-4 space-y-1" {...props} />,
+  ul: (props: any) => (
+    <ul className="mb-4 list-inside list-disc space-y-1" {...props} />
+  ),
   ol: (props: any) => (
-    <ol className="list-decimal list-inside mb-4 space-y-1" {...props} />
+    <ol className="mb-4 list-inside list-decimal space-y-1" {...props} />
   ),
   li: (props: any) => <li className="mb-1" {...props} />,
   code: (props: any) => {
@@ -103,7 +121,7 @@ const createMdxComponents = () => ({
     if (!props.className) {
       return (
         <code
-          className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-sm"
+          className="rounded bg-gray-100 px-1.5 py-0.5 text-sm dark:bg-gray-800"
           {...props}
         />
       );
@@ -121,7 +139,7 @@ const createMdxComponents = () => ({
   },
   blockquote: (props: any) => (
     <blockquote
-      className="border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic my-4 text-gray-700 dark:text-gray-300"
+      className="my-4 border-l-4 border-gray-300 pl-4 italic text-gray-700 dark:border-gray-700 dark:text-gray-300"
       {...props}
     />
   ),
@@ -146,11 +164,11 @@ export default async function BlogPostPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex gap-8 max-w-7xl mx-auto">
-        <article className="flex-1 max-w-4xl">
+      <div className="mx-auto flex max-w-7xl gap-8">
+        <article className="max-w-4xl flex-1">
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
+            <div className="mb-4 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <time dateTime={post.date}>{formatDate(post.date)}</time>
               {post.updated && (
                 <>
@@ -169,7 +187,7 @@ export default async function BlogPostPage({
                   <a
                     key={tag}
                     href={`/tag/${tag}`}
-                    className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="rounded-full bg-gray-100 px-3 py-1 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
                   >
                     {tag}
                   </a>
@@ -179,9 +197,9 @@ export default async function BlogPostPage({
           </header>
 
           {post.coverImage && (
-            <div className="mb-8 aspect-video bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+            <div className="mb-8 aspect-video overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800">
               {/* 封面图占位，实际使用时用 next/image */}
-              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500" />
+              <div className="h-full w-full bg-gradient-to-br from-blue-400 to-purple-500" />
             </div>
           )}
 
@@ -214,7 +232,7 @@ export default async function BlogPostPage({
         </article>
 
         {headings.length > 0 && (
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden w-64 flex-shrink-0 lg:block">
             <TableOfContents headings={headings} />
           </aside>
         )}
@@ -222,4 +240,3 @@ export default async function BlogPostPage({
     </div>
   );
 }
-

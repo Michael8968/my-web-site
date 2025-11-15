@@ -52,10 +52,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error fetching posts:', error);
-    return NextResponse.json(
-      { error: '获取文章列表失败' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '获取文章列表失败' }, { status: 500 });
   }
 }
 
@@ -134,10 +131,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error creating post:', error);
-    return NextResponse.json(
-      { error: '创建文章失败' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '创建文章失败' }, { status: 500 });
   }
 }
-

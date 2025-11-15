@@ -10,17 +10,17 @@ export function Card({ post }: CardProps) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group block p-6 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg transition-all duration-300"
+      className="group block rounded-lg border border-gray-200 p-6 transition-all duration-300 hover:shadow-lg dark:border-gray-800"
     >
       {post.coverImage && (
-        <div className="mb-4 aspect-video bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 group-hover:scale-105 transition-transform duration-300" />
+        <div className="mb-4 aspect-video overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+          <div className="h-full w-full bg-gradient-to-br from-blue-400 to-purple-500 transition-transform duration-300 group-hover:scale-105" />
         </div>
       )}
-      <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+      <h2 className="mb-2 line-clamp-2 text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
         {post.title}
       </h2>
-      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+      <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
         {post.description}
       </p>
       <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-500">
@@ -28,11 +28,11 @@ export function Card({ post }: CardProps) {
         <span>{post.readingTime}</span>
       </div>
       {post.tags && post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="mt-4 flex flex-wrap gap-2">
           {post.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded"
+              className="rounded bg-gray-100 px-2 py-1 text-xs dark:bg-gray-800"
             >
               {tag}
             </span>
@@ -42,4 +42,3 @@ export function Card({ post }: CardProps) {
     </Link>
   );
 }
-

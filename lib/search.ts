@@ -13,7 +13,7 @@ export interface SearchIndexItem {
 // 构建搜索索引（在构建时生成）
 export async function buildSearchIndex(): Promise<SearchIndexItem[]> {
   const posts = await getAllPosts();
-  
+
   return posts.map((post) => ({
     slug: post.slug,
     title: post.title,
@@ -29,4 +29,3 @@ export async function generateSearchIndexJSON(): Promise<string> {
   const index = await buildSearchIndex();
   return JSON.stringify(index);
 }
-

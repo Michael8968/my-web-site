@@ -28,9 +28,10 @@ export async function POST(
 ) {
   try {
     const slug = params.slug;
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
-               'unknown';
+    const ip =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
 
     // 限流检查
     if (!checkRateLimit(ip)) {
@@ -52,17 +53,11 @@ export async function POST(
     }
 
     if (author.length > 100) {
-      return NextResponse.json(
-        { error: '作者名称过长' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '作者名称过长' }, { status: 400 });
     }
 
     if (content.length > 5000) {
-      return NextResponse.json(
-        { error: '评论内容过长' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '评论内容过长' }, { status: 400 });
     }
 
     // 查找或创建文章（基于 slug）
@@ -148,4 +143,3 @@ export async function GET(
     );
   }
 }
-

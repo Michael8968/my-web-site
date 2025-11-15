@@ -34,10 +34,11 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-2">
-        标签: <span className="text-blue-600 dark:text-blue-400">{decodedTag}</span>
+      <h1 className="mb-2 text-4xl font-bold">
+        标签:{' '}
+        <span className="text-blue-600 dark:text-blue-400">{decodedTag}</span>
       </h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-8">
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         找到 {posts.length} 篇文章
       </p>
 
@@ -46,17 +47,17 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="group block p-6 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg transition-shadow"
+            className="group block rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-lg dark:border-gray-800"
           >
             {post.coverImage && (
-              <div className="mb-4 aspect-video bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500" />
+              <div className="mb-4 aspect-video overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+                <div className="h-full w-full bg-gradient-to-br from-blue-400 to-purple-500" />
               </div>
             )}
-            <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h2 className="mb-2 text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
               {post.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+            <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
               {post.description}
             </p>
             <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-500">
@@ -69,4 +70,3 @@ export default async function TagPage({ params }: { params: { tag: string } }) {
     </div>
   );
 }
-

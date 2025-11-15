@@ -12,7 +12,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error generating search index:', error);
-    return NextResponse.json({ error: 'Failed to generate search index' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to generate search index' },
+      { status: 500 }
+    );
   }
 }
-

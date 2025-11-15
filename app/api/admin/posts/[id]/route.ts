@@ -15,10 +15,7 @@ export async function GET(
     });
 
     if (!post) {
-      return NextResponse.json(
-        { error: '文章不存在' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '文章不存在' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -36,10 +33,7 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error fetching post:', error);
-    return NextResponse.json(
-      { error: '获取文章失败' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '获取文章失败' }, { status: 500 });
   }
 }
 
@@ -66,10 +60,7 @@ export async function PUT(
     });
 
     if (!existingPost) {
-      return NextResponse.json(
-        { error: '文章不存在' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '文章不存在' }, { status: 404 });
     }
 
     // 如果slug改变，检查新slug是否已被使用
@@ -136,10 +127,7 @@ export async function PUT(
     });
   } catch (error) {
     console.error('Error updating post:', error);
-    return NextResponse.json(
-      { error: '更新文章失败' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '更新文章失败' }, { status: 500 });
   }
 }
 
@@ -154,10 +142,7 @@ export async function DELETE(
     });
 
     if (!post) {
-      return NextResponse.json(
-        { error: '文章不存在' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '文章不存在' }, { status: 404 });
     }
 
     // 删除文章（关联的评论和标签关系会自动处理）
@@ -165,16 +150,9 @@ export async function DELETE(
       where: { id: params.id },
     });
 
-    return NextResponse.json(
-      { message: '文章已删除' },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: '文章已删除' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting post:', error);
-    return NextResponse.json(
-      { error: '删除文章失败' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '删除文章失败' }, { status: 500 });
   }
 }
-

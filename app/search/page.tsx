@@ -61,7 +61,7 @@ export default function SearchPage() {
 
       // 执行搜索
       const results = idx.search(query);
-      
+
       // 获取匹配的文档
       return results
         .map((result: any) => {
@@ -80,24 +80,24 @@ export default function SearchPage() {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">搜索</h1>
+    <div className="container mx-auto max-w-4xl px-4 py-8">
+      <h1 className="mb-8 text-4xl font-bold">搜索</h1>
 
       <div className="relative mb-8">
-        <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <SearchIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="搜索文章..."
-          className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
           autoFocus
         />
       </div>
@@ -113,12 +113,12 @@ export default function SearchPage() {
           <Link
             key={result.slug}
             href={`/blog/${result.slug}`}
-            className="block p-6 border border-gray-200 dark:border-gray-800 rounded-lg hover:shadow-lg transition-shadow"
+            className="block rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-lg dark:border-gray-800"
           >
-            <h2 className="text-xl font-semibold mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <h2 className="mb-2 text-xl font-semibold transition-colors hover:text-blue-600 dark:hover:text-blue-400">
               {result.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
+            <p className="mb-3 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
               {result.description}
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
@@ -128,7 +128,7 @@ export default function SearchPage() {
                   {result.tags.slice(0, 3).map((tag: string) => (
                     <span
                       key={tag}
-                      className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded"
+                      className="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800"
                     >
                       {tag}
                     </span>
@@ -141,7 +141,7 @@ export default function SearchPage() {
       </div>
 
       {query.trim() && searchResults.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-gray-500 dark:text-gray-400">
             没有找到相关文章，请尝试其他关键词
           </p>
@@ -149,13 +149,10 @@ export default function SearchPage() {
       )}
 
       {!query.trim() && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">
-            输入关键词开始搜索
-          </p>
+        <div className="py-12 text-center">
+          <p className="text-gray-500 dark:text-gray-400">输入关键词开始搜索</p>
         </div>
       )}
     </div>
   );
 }
-

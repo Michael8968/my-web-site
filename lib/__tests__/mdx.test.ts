@@ -44,4 +44,3 @@ slug: "test-post"
     expect(posts[0].title).toBe('测试文章');
   });
 });
-

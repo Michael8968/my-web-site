@@ -98,7 +98,7 @@ export default function AdminPostsPage() {
 
   if (showForm) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto max-w-4xl px-4 py-8">
         <PostForm
           post={editingPost}
           onClose={handleFormClose}
@@ -110,19 +110,19 @@ export default function AdminPostsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h1 className="text-4xl font-bold">文章管理</h1>
         <button
           onClick={handleNew}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="h-5 w-5" />
           新建文章
         </button>
       </div>
 
       <div className="mb-4 flex items-center gap-4">
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex cursor-pointer items-center gap-2">
           <input
             type="checkbox"
             checked={includeDrafts}
@@ -130,7 +130,7 @@ export default function AdminPostsPage() {
               setIncludeDrafts(e.target.checked);
               setPage(1);
             }}
-            className="w-4 h-4"
+            className="h-4 w-4"
           />
           <span>包含草稿</span>
         </label>
@@ -138,10 +138,10 @@ export default function AdminPostsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
         </div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-gray-500 dark:text-gray-400">暂无文章</p>
         </div>
       ) : (
@@ -150,28 +150,28 @@ export default function AdminPostsPage() {
             <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
               <thead>
                 <tr className="bg-gray-100 dark:bg-gray-800">
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     标题
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     Slug
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     状态
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     标签
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     浏览量
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     评论数
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     创建时间
                   </th>
-                  <th className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     操作
                   </th>
                 </tr>
@@ -182,32 +182,32 @@ export default function AdminPostsPage() {
                     key={post.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
                   >
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
                       <div className="font-medium">{post.title}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                      <div className="line-clamp-1 text-sm text-gray-500 dark:text-gray-400">
                         {post.description}
                       </div>
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
+                    <td className="border border-gray-300 px-4 py-2 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-400">
                       {post.slug}
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
                       <span
-                        className={`px-2 py-1 text-xs rounded ${
+                        className={`rounded px-2 py-1 text-xs ${
                           post.published
-                            ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
                         }`}
                       >
                         {post.published ? '已发布' : '草稿'}
                       </span>
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
                       <div className="flex flex-wrap gap-1">
                         {post.tags.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 rounded"
+                            className="rounded bg-gray-100 px-2 py-1 text-xs dark:bg-gray-800"
                           >
                             {tag}
                           </span>
@@ -219,44 +219,44 @@ export default function AdminPostsPage() {
                         )}
                       </div>
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm">
+                    <td className="border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">
                       {post.views}
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm">
+                    <td className="border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">
                       {post.commentsCount}
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
+                    <td className="border border-gray-300 px-4 py-2 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-400">
                       {formatDate(post.createdAt)}
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
                       <div className="flex items-center gap-2">
                         {post.published && (
                           <Link
                             href={`/blog/${post.slug}`}
                             target="_blank"
-                            className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                            className="rounded p-1 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
                             title="查看"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="h-4 w-4" />
                           </Link>
                         )}
                         <button
                           onClick={() => handleEdit(post)}
-                          className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                          className="rounded p-1 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
                           title="编辑"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(post.id)}
                           disabled={deletingId === post.id}
-                          className="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded disabled:opacity-50"
+                          className="rounded p-1 text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20"
                           title="删除"
                         >
                           {deletingId === post.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="h-4 w-4" />
                           )}
                         </button>
                       </div>
@@ -268,33 +268,31 @@ export default function AdminPostsPage() {
           </div>
 
           {totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-8">
+            <div className="mt-8 flex justify-center gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded border border-gray-300 px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
               >
                 上一页
               </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`px-4 py-2 border rounded ${
-                      p === page
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                )
-              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`rounded border px-4 py-2 ${
+                    p === page
+                      ? 'border-blue-600 bg-blue-600 text-white'
+                      : 'border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded border border-gray-300 px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
               >
                 下一页
               </button>
@@ -305,4 +303,3 @@ export default function AdminPostsPage() {
     </div>
   );
 }
-

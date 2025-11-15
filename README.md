@@ -84,16 +84,15 @@ my-web-site/
 
 ```yaml
 ---
-title: "文章标题"
-description: "文章描述"
-date: "2025-01-01"
-tags: ["tag1", "tag2"]
-slug: "article-slug"
-coverImage: "/assets/covers/image.png"
-readingTime: "5 min"
+title: '文章标题'
+description: '文章描述'
+date: '2025-01-01'
+tags: ['tag1', 'tag2']
+slug: 'article-slug'
+coverImage: '/assets/covers/image.png'
+readingTime: '5 min'
 draft: false
 ---
-
 文章内容...
 ```
 
@@ -118,4 +117,3 @@ draft: false
 ## 许可证
 
 MIT
-

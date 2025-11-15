@@ -45,4 +45,3 @@ describe('Card Component', () => {
     expect(link).toHaveAttribute('href', '/blog/test-post');
   });
 });
-
