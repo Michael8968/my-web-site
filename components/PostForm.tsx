@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Sparkles, Wand2, ChevronDown } from 'lucide-react';
 
 interface Post {
   id: string;
@@ -22,6 +22,9 @@ interface PostFormProps {
 export function PostForm({ post, onClose, onSave }: PostFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
+  const [showGenerateMenu, setShowGenerateMenu] = useState(false);
+  const [showPolishMenu, setShowPolishMenu] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -59,6 +62,97 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
       title,
       slug: prev.slug || generateSlug(title),
     }));
+  };
+
+  const handleGenerate = async (type: 'description' | 'outline' | 'full') => {
+    setError('');
+    setAiLoading(`generate-${type}`);
+    setShowGenerateMenu(false);
+
+    try {
+      const tags = formData.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
+
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          tags,
+          type,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'AI 生成失败');
+        return;
+      }
+
+      if (type === 'description') {
+        setFormData((prev) => ({
+          ...prev,
+          description: data.content,
+        }));
+      } else if (type === 'outline' || type === 'full') {
+        setFormData((prev) => ({
+          ...prev,
+          content: data.content,
+        }));
+      }
+    } catch (err) {
+      console.error('Error generating content:', err);
+      setError('AI 生成失败，请稍后重试');
+    } finally {
+      setAiLoading(null);
+    }
+  };
+
+  const handlePolish = async (type: 'grammar' | 'style' | 'full') => {
+    if (!formData.content || formData.content.trim().length === 0) {
+      setError('请先输入内容再进行润色');
+      return;
+    }
+
+    setError('');
+    setAiLoading(`polish-${type}`);
+    setShowPolishMenu(false);
+
+    try {
+      const response = await fetch('/api/ai/polish', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: formData.content,
+          type,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'AI 润色失败');
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        content: data.content,
+      }));
+    } catch (err) {
+      console.error('Error polishing content:', err);
+      setError('AI 润色失败，请稍后重试');
+    } finally {
+      setAiLoading(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,12 +251,64 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
         </div>
 
         <div>
-          <label
-            htmlFor="description"
-            className="mb-2 block text-sm font-medium"
-          >
-            描述 <span className="text-red-500">*</span>
-          </label>
+          <div className="mb-2 flex items-center justify-between">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium"
+            >
+              描述 <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowGenerateMenu(!showGenerateMenu);
+                  setShowPolishMenu(false);
+                }}
+                disabled={aiLoading !== null}
+                className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+              >
+                {aiLoading?.startsWith('generate') ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="h-4 w-4" />
+                )}
+                <span>AI 生成</span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {showGenerateMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowGenerateMenu(false)}
+                  />
+                  <div className="absolute right-0 top-full z-20 mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                    <button
+                      type="button"
+                      onClick={() => handleGenerate('description')}
+                      className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      生成描述
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleGenerate('outline')}
+                      className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      生成大纲
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleGenerate('full')}
+                      className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      生成完整文章
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
           <textarea
             id="description"
             value={formData.description}
@@ -177,9 +323,106 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
         </div>
 
         <div>
-          <label htmlFor="content" className="mb-2 block text-sm font-medium">
-            内容
-          </label>
+          <div className="mb-2 flex items-center justify-between">
+            <label htmlFor="content" className="block text-sm font-medium">
+              内容
+            </label>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPolishMenu(!showPolishMenu);
+                    setShowGenerateMenu(false);
+                  }}
+                  disabled={aiLoading !== null || !formData.content}
+                  className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+                >
+                  {aiLoading?.startsWith('polish') ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-4 w-4" />
+                  )}
+                  <span>AI 润色</span>
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {showPolishMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowPolishMenu(false)}
+                    />
+                    <div className="absolute right-0 top-full z-20 mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                      <button
+                        type="button"
+                        onClick={() => handlePolish('grammar')}
+                        className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        语法润色
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePolish('style')}
+                        className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        风格优化
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePolish('full')}
+                        className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        全面润色
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowGenerateMenu(!showGenerateMenu);
+                    setShowPolishMenu(false);
+                  }}
+                  disabled={aiLoading !== null}
+                  className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+                >
+                  {aiLoading?.startsWith('generate') ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                  <span>AI 生成</span>
+                  <ChevronDown className="h-3 w-3" />
+                </button>
+                {showGenerateMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowGenerateMenu(false)}
+                    />
+                    <div className="absolute right-0 top-full z-20 mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                      <button
+                        type="button"
+                        onClick={() => handleGenerate('outline')}
+                        className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        生成大纲
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleGenerate('full')}
+                        className="w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        生成完整文章
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
           <textarea
             id="content"
             value={formData.content}
