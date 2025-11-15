@@ -75,7 +75,8 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: '你是一位专业的技术博客作者，擅长撰写清晰、有深度的技术文章。',
+          content:
+            '你是一位专业的技术博客作者，擅长撰写清晰、有深度的技术文章。',
         },
         {
           role: 'user',
@@ -110,4 +111,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

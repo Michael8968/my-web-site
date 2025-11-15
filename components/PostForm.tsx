@@ -252,10 +252,7 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium"
-            >
+            <label htmlFor="description" className="block text-sm font-medium">
               描述 <span className="text-red-500">*</span>
             </label>
             <div className="relative">

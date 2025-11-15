@@ -44,6 +44,7 @@ OPENAI_API_KEY="your-openai-api-key"
 ```
 
 **环境变量说明：**
+
 - `DATABASE_URL` - 数据库连接字符串
 - `NEXT_PUBLIC_SITE_URL` - 网站URL
 - `OPENAI_API_KEY` - OpenAI API密钥（用于AI生成和润色功能，可选）

@@ -21,10 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!content || content.trim().length === 0) {
-      return NextResponse.json(
-        { error: '内容不能为空' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '内容不能为空' }, { status: 400 });
     }
 
     // 构建提示词
@@ -82,7 +79,8 @@ ${content}
       messages: [
         {
           role: 'system',
-          content: '你是一位专业的技术博客编辑，擅长润色技术文章，使其更专业、易读。',
+          content:
+            '你是一位专业的技术博客编辑，擅长润色技术文章，使其更专业、易读。',
         },
         {
           role: 'user',
@@ -96,17 +94,13 @@ ${content}
     const polishedContent = completion.choices[0]?.message?.content || '';
 
     if (!polishedContent) {
-      return NextResponse.json(
-        { error: '润色失败，请重试' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: '润色失败，请重试' }, { status: 500 });
     }
 
     return NextResponse.json({ content: polishedContent });
   } catch (error) {
     console.error('Error polishing content:', error);
-    const errorMessage =
-      error instanceof Error ? error.message : '润色失败';
+    const errorMessage = error instanceof Error ? error.message : '润色失败';
     return NextResponse.json(
       {
         error: '润色失败',
@@ -117,4 +111,3 @@ ${content}
     );
   }
 }
-
