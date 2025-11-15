@@ -1,0 +1,39 @@
+---
+title: "欢迎来到我的博客"
+description: "这是第一篇示例文章，展示如何使用 MDX 编写博客内容"
+date: "2025-01-01"
+tags: ["nextjs", "mdx", "blog"]
+slug: "welcome-to-my-blog"
+coverImage: "/assets/covers/welcome.png"
+readingTime: "3 min"
+draft: false
+---
+
+# 欢迎来到我的博客
+
+这是第一篇示例文章，展示如何使用 MDX 编写博客内容。
+
+## 功能特性
+
+- ✅ MDX 支持
+- ✅ 代码高亮
+- ✅ 响应式设计
+- ✅ 主题切换
+
+## 代码示例
+
+```typescript
+export default function BlogPost({ post }: { post: PostType }) {
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  );
+}
+```
+
+## 总结
+
+这是一个基于 Next.js 和 MDX 构建的现代化博客系统。
+
