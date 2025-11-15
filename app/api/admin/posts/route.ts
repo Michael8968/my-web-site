@@ -14,6 +14,9 @@ export async function GET(request: NextRequest) {
 
     const where = includeDrafts ? {} : { published: true };
 
+    // 确保数据库连接正常
+    await prisma.$connect();
+
     const [posts, total] = await Promise.all([
       prisma.post.findMany({
         where,
@@ -57,12 +60,23 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching posts:', error);
     const errorMessage = error instanceof Error ? error.message : '未知错误';
     const errorStack = error instanceof Error ? error.stack : undefined;
-    console.error('Error details:', { errorMessage, errorStack });
+    const errorName = error instanceof Error ? error.name : 'UnknownError';
+
+    // 记录完整的错误信息
+    console.error('Error details:', {
+      errorMessage,
+      errorStack,
+      errorName,
+      error: error instanceof Error ? error : String(error),
+    });
+
+    // 在生产环境也返回错误详情，方便调试
     return NextResponse.json(
       {
         error: '获取文章列表失败',
-        details:
-          process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+        message: errorMessage,
+        name: errorName,
+        ...(process.env.NODE_ENV === 'development' && { stack: errorStack }),
       },
       { status: 500 }
     );
