@@ -14,14 +14,16 @@ export interface SearchIndexItem {
 export async function buildSearchIndex(): Promise<SearchIndexItem[]> {
   const posts = await getAllPosts();
 
-  return posts.map((post) => ({
-    slug: post.slug,
-    title: post.title,
-    description: post.description,
-    content: post.content || '',
-    tags: post.tags || [],
-    date: post.date,
-  }));
+  return posts
+    .filter((post) => post.slug && post.title) // 过滤无效文章
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title || '',
+      description: post.description || '',
+      content: post.content || '',
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      date: post.date || new Date().toISOString(),
+    }));
 }
 
 // 生成搜索索引 JSON（用于客户端）

@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
         views: post.views,
-        tags: post.tags.map((tag) => tag.name),
-        commentsCount: post._count.comments,
+        tags: (post.tags || []).map((tag) => tag.name),
+        commentsCount: post._count?.comments || 0,
       })),
       total,
       page,
@@ -59,20 +59,25 @@ export async function GET(request: NextRequest) {
     const errorStack = error instanceof Error ? error.stack : undefined;
     const errorName = error instanceof Error ? error.name : 'UnknownError';
 
-    // 检查是否是 SQLite 相关错误（在 Vercel 上常见）
-    const isSqliteError =
+    // 检查是否是数据库连接错误
+    const isDatabaseError =
       errorMessage.includes('SQLite') ||
       errorMessage.includes('ENOENT') ||
       errorMessage.includes('read-only') ||
-      errorMessage.includes('file system');
+      errorMessage.includes('file system') ||
+      errorMessage.includes('P1001') ||
+      errorMessage.includes('Can\'t reach database server') ||
+      errorMessage.includes('Connection') ||
+      errorMessage.includes('timeout');
 
     // 记录完整的错误信息
     console.error('Error details:', {
       errorMessage,
       errorStack,
       errorName,
-      isSqliteError,
+      isDatabaseError,
       error: error instanceof Error ? error : String(error),
+      timestamp: new Date().toISOString(),
     });
 
     // 在生产环境也返回错误详情，方便调试
@@ -81,8 +86,8 @@ export async function GET(request: NextRequest) {
         error: '获取文章列表失败',
         message: errorMessage,
         name: errorName,
-        ...(isSqliteError && {
-          hint: 'SQLite 在 Vercel 上无法工作，请使用 PostgreSQL 或其他云数据库',
+        ...(isDatabaseError && {
+          hint: '数据库连接失败，请检查 DATABASE_URL 环境变量是否正确配置',
         }),
         ...(process.env.NODE_ENV === 'development' && { stack: errorStack }),
       },

@@ -44,7 +44,8 @@ export const prisma =
             : ['error'],
       }));
 
-if (process.env.NODE_ENV !== 'production') {
+// 在无服务器环境中也缓存 Prisma 客户端，避免重复创建连接
+if (!globalForPrisma.prisma) {
   globalForPrisma.prisma = prisma;
 }
 

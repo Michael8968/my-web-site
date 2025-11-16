@@ -24,6 +24,14 @@ const nextConfig = {
         bufferutil: 'commonjs bufferutil',
         'utf-8-validate': 'commonjs utf-8-validate',
       });
+    } else {
+      // 客户端配置：确保 lunr 正确打包
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        crypto: false,
+      };
     }
     return config;
   },
