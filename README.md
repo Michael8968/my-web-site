@@ -8,7 +8,7 @@
 - **语言**: TypeScript
 - **样式**: Tailwind CSS
 - **内容**: MDX
-- **数据库**: Prisma (支持 SQLite/PostgreSQL)
+- **数据库**: Prisma + Neon (无服务器 PostgreSQL)
 - **搜索**: Lunr.js (客户端搜索)
 
 ## 功能特性
@@ -37,23 +37,35 @@ npm install
 
 创建 `.env.local` 文件：
 
+**使用 Neon（推荐）：**
+
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require"
+DIRECT_URL="postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require"
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 OPENAI_API_KEY="your-openai-api-key"
 ```
 
 **环境变量说明：**
 
-- `DATABASE_URL` - 数据库连接字符串
+- `DATABASE_URL` - Neon 数据库连接字符串（带连接池）
+- `DIRECT_URL` - Neon 直接连接字符串（用于 Prisma Migrate）
 - `NEXT_PUBLIC_SITE_URL` - 网站URL
 - `OPENAI_API_KEY` - OpenAI API密钥（用于AI生成和润色功能，可选）
+
+> 💡 **推荐使用 Neon**：本项目已配置为使用 Neon（无服务器 PostgreSQL），完美适配 Vercel。详见 [迁移指南](./MIGRATION_GUIDE.md)。
 
 ### 初始化数据库
 
 ```bash
-npx prisma generate
-npx prisma db push
+# 生成 Prisma Client
+npm run db:generate
+
+# 创建数据库表（开发环境）
+npm run db:push
+
+# 或使用迁移（推荐）
+npm run db:migrate
 ```
 
 ### 开发模式
@@ -113,14 +125,30 @@ draft: false
 - `npm run typecheck` - TypeScript 类型检查
 - `npm run format` - 格式化代码
 
+### 数据库命令
+
+- `npm run db:generate` - 生成 Prisma Client
+- `npm run db:push` - 推送 schema 到数据库（开发环境）
+- `npm run db:migrate` - 创建并应用迁移（开发环境）
+- `npm run db:migrate:deploy` - 应用迁移（生产环境）
+- `npm run db:studio` - 打开 Prisma Studio（数据库管理界面）
+
 ## 部署
 
 推荐使用 Vercel 部署：
 
 1. 将代码推送到 GitHub
 2. 在 Vercel 中导入项目
-3. 配置环境变量
-4. 自动部署
+3. **创建 Neon 数据库**：
+   - 访问 [Neon 官网](https://neon.tech) 注册账户
+   - 创建新项目并获取连接字符串
+   - 在 Vercel 项目设置中添加环境变量：
+     - `DATABASE_URL` - Neon 连接字符串
+     - `DIRECT_URL` - Neon 直接连接字符串
+4. 运行数据库迁移（见下方）
+5. 自动部署
+
+> 📖 **详细配置指南**：查看 [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) 了解完整的 Neon 配置步骤和数据库迁移说明。
 
 ## 许可证
 

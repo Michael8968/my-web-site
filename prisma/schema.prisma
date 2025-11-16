@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model Post {
@@ -12,7 +12,7 @@ model Post {
   slug        String    @unique
   title       String
   description String
-  content     String?   // 可选：用于需要同步到 DB 的场景
+  content     String?   @db.Text // 可选：用于需要同步到 DB 的场景
   published   Boolean   @default(false)
   publishedAt DateTime?
   tags        Tag[]     @relation("PostTags")
@@ -30,11 +30,13 @@ model Tag {
 
 model Comment {
   id        String   @id @default(cuid())
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
   author    String
-  content   String
+  content   String   @db.Text
   createdAt DateTime @default(now())
   approved  Boolean  @default(false)
+
+  @@index([postId])
 }
 
