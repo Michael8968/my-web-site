@@ -1,25 +1,35 @@
 import type { Metadata } from 'next';
+import { getProjects, type Project } from '@/lib/projects';
 
 export const metadata: Metadata = {
   title: '项目',
   description: '我的项目作品集',
 };
 
-export default function ProjectsPage() {
-  const projects = [
-    {
-      title: '项目名称 1',
-      description: '项目描述...',
-      tags: ['Next.js', 'TypeScript', 'Tailwind'],
-      link: '#',
-    },
-    {
-      title: '项目名称 2',
-      description: '项目描述...',
-      tags: ['React', 'Node.js'],
-      link: '#',
-    },
-  ];
+export default async function ProjectsPage() {
+  // 通过 API 获取项目数据
+  let projects: Project[];
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000');
+    const res = await fetch(`${baseUrl}/api/projects`, {
+      next: { revalidate: 3600 }, // 缓存 1 小时
+    });
+
+    if (res.ok) {
+      projects = await res.json();
+    } else {
+      // 如果 API 失败，使用共享数据源作为后备
+      projects = getProjects();
+    }
+  } catch (error) {
+    console.error('Error fetching projects from API:', error);
+    // 如果 API 失败，使用共享数据源作为后备
+    projects = getProjects();
+  }
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -46,6 +56,8 @@ export default function ProjectsPage() {
             </div>
             <a
               href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-600 hover:underline dark:text-blue-400"
             >
               查看项目 →
