@@ -37,6 +37,7 @@ async function getAllPostsFromDB(): Promise<PostType[]> {
         tags: post.tags.map((tag) => tag.name),
         readingTime: readingTimeText,
         content,
+        coverImage: post.coverImage || undefined,
         draft: false,
       } as PostType;
     });
@@ -76,6 +77,7 @@ async function getPostBySlugFromDB(slug: string): Promise<PostType | null> {
       tags: post.tags.map((tag) => tag.name),
       readingTime: readingTimeText,
       content,
+      coverImage: post.coverImage || undefined,
       draft: false,
     } as PostType;
   } catch (error) {

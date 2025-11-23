@@ -14,6 +14,7 @@ model Post {
   title       String
   description String
   content     String?   @db.Text // 可选：用于需要同步到 DB 的场景
+  coverImage  String?   // 封面图片 URL
   published   Boolean   @default(false)
   publishedAt DateTime?
   tags        Tag[]     @relation("PostTags")

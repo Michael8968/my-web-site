@@ -3,19 +3,30 @@ import { prisma } from '@/lib/prisma';
 
 // 强制动态渲染，避免构建时静态分析
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // 30秒超时
+export const runtime = 'nodejs';
 
 // 获取单篇文章
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    // 处理 Next.js 14/15 中 params 可能是 Promise 的情况
+    const resolvedParams = await Promise.resolve(params);
+    const postId = resolvedParams.id;
+
+    console.log('[GET Post] 获取文章 ID:', postId);
+
+    // 执行数据库查询
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id: postId },
       include: {
         tags: true,
       },
     });
+
+    console.log('[GET Post] 查询结果:', post ? '找到文章' : '未找到文章');
 
     if (!post) {
       return NextResponse.json({ error: '文章不存在' }, { status: 404 });
@@ -27,6 +38,7 @@ export async function GET(
       title: post.title,
       description: post.description,
       content: post.content,
+      coverImage: post.coverImage,
       published: post.published,
       publishedAt: post.publishedAt?.toISOString() || null,
       createdAt: post.createdAt.toISOString(),
@@ -35,16 +47,24 @@ export async function GET(
       tags: post.tags.map((tag) => tag.name),
     });
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error('[GET Post] Error fetching post:', error);
     const errorMessage = error instanceof Error ? error.message : '未知错误';
-    console.error('Error details:', { errorMessage });
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('[GET Post] Error details:', { errorMessage, errorStack });
+
+    // 确保返回 JSON 格式
     return NextResponse.json(
       {
         error: '获取文章失败',
         details:
           process.env.NODE_ENV === 'development' ? errorMessage : undefined,
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
   }
 }
@@ -52,11 +72,18 @@ export async function GET(
 // 更新文章
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    // 处理 Next.js 14/15 中 params 可能是 Promise 的情况
+    const resolvedParams = await Promise.resolve(params);
+    const postId = resolvedParams.id;
+
+    console.log('[PUT Post] 更新文章 ID:', postId);
+
     const body = await request.json();
-    const { title, slug, description, content, tags, published } = body;
+    const { title, slug, description, content, tags, published, coverImage } =
+      body;
 
     // 验证必填字段
     if (!title || !slug || !description) {
@@ -68,7 +95,7 @@ export async function PUT(
 
     // 检查文章是否存在
     const existingPost = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id: postId },
     });
 
     if (!existingPost) {
@@ -105,12 +132,13 @@ export async function PUT(
 
     // 更新文章
     const post = await prisma.post.update({
-      where: { id: params.id },
+      where: { id: postId },
       data: {
         title,
         slug,
         description,
         content: content || null,
+        coverImage: coverImage || null,
         published: published ?? false,
         publishedAt:
           published && !existingPost.publishedAt
@@ -155,11 +183,17 @@ export async function PUT(
 // 删除文章
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    // 处理 Next.js 14/15 中 params 可能是 Promise 的情况
+    const resolvedParams = await Promise.resolve(params);
+    const postId = resolvedParams.id;
+
+    console.log('[DELETE Post] 删除文章 ID:', postId);
+
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id: postId },
     });
 
     if (!post) {
@@ -168,7 +202,7 @@ export async function DELETE(
 
     // 删除文章（关联的评论和标签关系会自动处理）
     await prisma.post.delete({
-      where: { id: params.id },
+      where: { id: postId },
     });
 
     return NextResponse.json({ message: '文章已删除' }, { status: 200 });

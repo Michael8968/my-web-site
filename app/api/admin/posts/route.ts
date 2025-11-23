@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
         views: post.views,
         tags: (post.tags || []).map((tag) => tag.name),
         commentsCount: post._count?.comments || 0,
+        coverImage: post.coverImage || null,
       })),
       total,
       page,
@@ -100,7 +101,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, slug, description, content, tags, published } = body;
+    const { title, slug, description, content, tags, published, coverImage } =
+      body;
 
     // 验证必填字段
     if (!title || !slug || !description) {
@@ -143,6 +145,7 @@ export async function POST(request: NextRequest) {
         slug,
         description,
         content: content || null,
+        coverImage: coverImage || null,
         published: published ?? false,
         publishedAt: published ? new Date() : null,
         tags: {
@@ -161,6 +164,7 @@ export async function POST(request: NextRequest) {
         title: post.title,
         description: post.description,
         content: post.content,
+        coverImage: post.coverImage,
         published: post.published,
         publishedAt: post.publishedAt?.toISOString() || null,
         createdAt: post.createdAt.toISOString(),

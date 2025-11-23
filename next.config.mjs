@@ -15,6 +15,12 @@ const nextConfig = {
       },
     ],
   },
+  // 增加请求体大小限制以支持大文件上传（100MB）
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '100mb',
+    },
+  },
   webpack: (config, { isServer }) => {
     if (isServer) {
       // 外部化 ws 和相关模块，避免 webpack 打包原生依赖

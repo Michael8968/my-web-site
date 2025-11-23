@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/utils';
 import { PostForm } from '@/components/PostForm';
@@ -21,6 +22,7 @@ interface Post {
   views: number;
   tags: string[];
   commentsCount: number;
+  coverImage: string | null;
 }
 
 export default function AdminPostsPage() {
@@ -204,28 +206,31 @@ export default function AdminPostsPage() {
             <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
               <thead>
                 <tr className="bg-gray-100 dark:bg-gray-800">
-                  <th className="w-[25%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[10%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                    封面
+                  </th>
+                  <th className="w-[20%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     标题
                   </th>
-                  <th className="w-[15%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[12%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     Slug
                   </th>
-                  <th className="w-[8%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[7%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     状态
                   </th>
-                  <th className="w-[15%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[12%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     标签
                   </th>
-                  <th className="w-[8%] border border-gray-300 bg-blue-100 px-4 py-2 text-left dark:border-gray-700 dark:bg-blue-900/30">
+                  <th className="w-[7%] border border-gray-300 bg-blue-100 px-4 py-2 text-left dark:border-gray-700 dark:bg-blue-900/30">
                     浏览量
                   </th>
-                  <th className="w-[8%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[7%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     评论数
                   </th>
-                  <th className="w-[12%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[10%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     创建时间
                   </th>
-                  <th className="w-[9%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
+                  <th className="w-[11%] border border-gray-300 px-4 py-2 text-left dark:border-gray-700">
                     操作
                   </th>
                 </tr>
@@ -236,6 +241,22 @@ export default function AdminPostsPage() {
                     key={post.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
                   >
+                    <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
+                      {post.coverImage ? (
+                        <div className="relative aspect-video overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
+                          <Image
+                            src={post.coverImage}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100px, 120px"
+                            unoptimized={post.coverImage.startsWith('http')}
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative aspect-video overflow-hidden rounded bg-gradient-to-br from-blue-400 to-purple-500" />
+                      )}
+                    </td>
                     <td className="border border-gray-300 px-4 py-2 dark:border-gray-700">
                       <div className="font-medium">{post.title}</div>
                       <div className="line-clamp-1 text-sm text-gray-500 dark:text-gray-400">

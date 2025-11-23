@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Loader2, X, Sparkles, Wand2, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, X, Sparkles, Wand2, ChevronDown, Upload } from 'lucide-react';
 
 interface Post {
   id: string;
@@ -11,6 +11,7 @@ interface Post {
   content: string | null;
   published: boolean;
   tags: string[];
+  coverImage?: string | null;
 }
 
 interface PostFormProps {
@@ -27,12 +28,15 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
   const [showPolishMenu, setShowPolishMenu] = useState(false);
   const [showTopicInput, setShowTopicInput] = useState(false);
   const [topic, setTopic] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
     description: '',
     content: '',
     tags: '',
+    coverImage: '',
     published: false,
   });
 
@@ -44,6 +48,7 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
         description: post.description,
         content: post.content || '',
         tags: post.tags.join(', '),
+        coverImage: post.coverImage || '',
         published: post.published,
       });
     }
@@ -102,6 +107,7 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
         description: data.description || '',
         content: data.content || '',
         tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
+        coverImage: data.coverImage || '',
         published: false,
       });
 
@@ -164,6 +170,94 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 验证文件类型
+    const allowedTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setError('不支持的文件类型。仅支持 JPEG、PNG、WebP 和 GIF');
+      return;
+    }
+
+    // 验证文件大小（设置一个合理的上限，比如 100MB，超过此值才拒绝）
+    // 小于 5MB 的文件直接上传，大于 5MB 的文件会在后端自动压缩
+    const MAX_UPLOAD_SIZE = 100 * 1024 * 1024; // 100MB
+    if (file.size > MAX_UPLOAD_SIZE) {
+      setError(`文件大小超过 ${MAX_UPLOAD_SIZE / 1024 / 1024}MB 限制`);
+      return;
+    }
+
+    setError('');
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      // 检查响应类型
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error(
+          'Unexpected response type:',
+          contentType,
+          text.substring(0, 200)
+        );
+        setError('服务器返回了意外的响应格式，请检查控制台');
+        return;
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error('Error parsing JSON response:', parseError);
+        setError('无法解析服务器响应');
+        return;
+      }
+
+      if (!response.ok) {
+        setError(data.error || '上传失败');
+        return;
+      }
+
+      // 设置上传后的图片 URL
+      setFormData((prev) => ({
+        ...prev,
+        coverImage: data.url,
+      }));
+
+      // 如果进行了压缩，显示提示信息
+      if (data.compressed && data.compressionRatio) {
+        console.log(
+          `图片已自动压缩：原始大小 ${(data.originalSize / 1024 / 1024).toFixed(2)}MB，压缩后 ${(data.finalSize / 1024 / 1024).toFixed(2)}MB，压缩率 ${data.compressionRatio}`
+        );
+      }
+    } catch (err) {
+      console.error('Error uploading file:', err);
+      setError('上传失败，请稍后重试');
+    } finally {
+      setUploading(false);
+      // 重置文件输入
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handlePolish = async (type: 'grammar' | 'style' | 'full') => {
     if (!formData.content || formData.content.trim().length === 0) {
       setError('请先输入内容再进行润色');
@@ -222,6 +316,7 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
         description: formData.description.trim(),
         content: formData.content.trim() || null,
         tags,
+        coverImage: formData.coverImage.trim() || null,
         published: formData.published,
       };
 
@@ -559,6 +654,78 @@ export function PostForm({ post, onClose, onSave }: PostFormProps) {
           />
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             支持Markdown格式
+          </p>
+        </div>
+
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label htmlFor="coverImage" className="block text-sm font-medium">
+              封面图片
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+              onChange={handleFileUpload}
+              className="hidden"
+              id="file-upload"
+              disabled={uploading}
+            />
+            <label
+              htmlFor="file-upload"
+              className={`flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 ${
+                uploading ? 'opacity-50' : ''
+              }`}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>上传中...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="h-4 w-4" />
+                  <span>上传图片</span>
+                </>
+              )}
+            </label>
+          </div>
+          <input
+            type="text"
+            id="coverImage"
+            value={formData.coverImage}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, coverImage: e.target.value }))
+            }
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+            placeholder="输入图片 URL 或路径（如：/assets/covers/image.png 或 https://example.com/image.jpg）"
+          />
+          {formData.coverImage && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                封面预览：
+              </p>
+              <div className="relative aspect-video overflow-hidden rounded-lg border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
+                <img
+                  src={formData.coverImage}
+                  alt="封面预览"
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML =
+                        '<div class="flex h-full items-center justify-center text-gray-400">图片加载失败</div>';
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            支持上传图片（JPEG、PNG、WebP、GIF，最大 100MB）。超过 5MB
+            的图片会自动压缩
           </p>
         </div>
 
