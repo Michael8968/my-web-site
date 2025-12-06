@@ -118,7 +118,9 @@ async function migrateMedia() {
       }
     }
 
-    console.log(`\n  文章封面迁移完成: ${migratedCount} 成功, ${skippedCount} 跳过`);
+    console.log(
+      `\n  文章封面迁移完成: ${migratedCount} 成功, ${skippedCount} 跳过`
+    );
 
     // 2. 迁移课程封面图片
     console.log('\n📷 迁移课程封面图片...');
@@ -160,7 +162,9 @@ async function migrateMedia() {
       }
     }
 
-    console.log(`\n  课程封面迁移完成: ${migratedCount} 成功, ${skippedCount} 跳过`);
+    console.log(
+      `\n  课程封面迁移完成: ${migratedCount} 成功, ${skippedCount} 跳过`
+    );
 
     console.log('\n🎉 媒体文件迁移完成！');
   } catch (error) {

@@ -20,8 +20,14 @@ export const authOptions: NextAuthOptions = {
           : undefined;
 
         console.log('[Auth] 登录尝试:', credentials?.email);
-        console.log('[Auth] ADMIN_EMAIL 配置:', adminEmail ? '已设置' : '未设置');
-        console.log('[Auth] ADMIN_PASSWORD_HASH 配置:', adminPasswordHash ? '已设置' : '未设置');
+        console.log(
+          '[Auth] ADMIN_EMAIL 配置:',
+          adminEmail ? '已设置' : '未设置'
+        );
+        console.log(
+          '[Auth] ADMIN_PASSWORD_HASH 配置:',
+          adminPasswordHash ? '已设置' : '未设置'
+        );
 
         if (!credentials?.email || !credentials?.password) {
           throw new Error('请输入邮箱和密码');
@@ -35,7 +41,12 @@ export const authOptions: NextAuthOptions = {
 
         // 验证邮箱
         if (credentials.email !== adminEmail) {
-          console.log('[Auth] 邮箱不匹配:', credentials.email, '!==', adminEmail);
+          console.log(
+            '[Auth] 邮箱不匹配:',
+            credentials.email,
+            '!==',
+            adminEmail
+          );
           throw new Error('邮箱或密码错误');
         }
 

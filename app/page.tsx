@@ -30,7 +30,7 @@ export default async function Home() {
   // 安全地获取文章和标签，即使数据库连接失败也能正常显示页面
   let allPosts: Awaited<ReturnType<typeof getAllPosts>> = [];
   let tags: string[] = [];
-  
+
   try {
     allPosts = await getAllPosts();
     tags = (await getAllTags()).slice(0, 20);

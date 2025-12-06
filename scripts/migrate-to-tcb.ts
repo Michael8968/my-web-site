@@ -77,7 +77,9 @@ async function migrateData() {
 
     if (posts.length > 0) {
       // 获取文章-标签关联
-      const { rows: postTags } = await pgPool.query('SELECT * FROM "_PostTags"');
+      const { rows: postTags } = await pgPool.query(
+        'SELECT * FROM "_PostTags"'
+      );
 
       await prisma.post.deleteMany();
       for (const post of posts) {
@@ -158,7 +160,9 @@ async function migrateData() {
     console.log(`  找到 ${courses.length} 个课程`);
 
     if (courses.length > 0) {
-      const { rows: courseTags } = await pgPool.query('SELECT * FROM "_CourseTags"');
+      const { rows: courseTags } = await pgPool.query(
+        'SELECT * FROM "_CourseTags"'
+      );
 
       await prisma.course.deleteMany();
       for (const course of courses) {
@@ -216,7 +220,9 @@ async function migrateData() {
 
     // 6. 迁移学习进度
     console.log('\n📊 迁移学习进度 (LessonProgress)...');
-    const { rows: progress } = await pgPool.query('SELECT * FROM "LessonProgress"');
+    const { rows: progress } = await pgPool.query(
+      'SELECT * FROM "LessonProgress"'
+    );
     console.log(`  找到 ${progress.length} 条进度记录`);
 
     if (progress.length > 0) {
@@ -237,7 +243,9 @@ async function migrateData() {
 
     // 7. 迁移订阅者
     console.log('\n📧 迁移订阅者 (Subscriber)...');
-    const { rows: subscribers } = await pgPool.query('SELECT * FROM "Subscriber"');
+    const { rows: subscribers } = await pgPool.query(
+      'SELECT * FROM "Subscriber"'
+    );
     console.log(`  找到 ${subscribers.length} 个订阅者`);
 
     if (subscribers.length > 0) {
@@ -262,7 +270,9 @@ async function migrateData() {
 
     // 8. 迁移分享统计
     console.log('\n📈 迁移分享统计 (ShareStats)...');
-    const { rows: shareStats } = await pgPool.query('SELECT * FROM "ShareStats"');
+    const { rows: shareStats } = await pgPool.query(
+      'SELECT * FROM "ShareStats"'
+    );
     console.log(`  找到 ${shareStats.length} 条分享记录`);
 
     if (shareStats.length > 0) {
