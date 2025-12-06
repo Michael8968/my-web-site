@@ -27,10 +27,20 @@ export default async function Home() {
   const t = await getTranslations('home');
   const tSite = await getTranslations('site');
 
-  const allPosts = await getAllPosts();
+  // 安全地获取文章和标签，即使数据库连接失败也能正常显示页面
+  let allPosts: Awaited<ReturnType<typeof getAllPosts>> = [];
+  let tags: string[] = [];
+  
+  try {
+    allPosts = await getAllPosts();
+    tags = (await getAllTags()).slice(0, 20);
+  } catch (error) {
+    console.error('Error loading posts:', error);
+    // 如果加载失败，使用空数组，页面仍可正常显示
+  }
+
   const featuredPosts = allPosts.slice(0, 3);
   const latestPosts = allPosts.slice(0, 6);
-  const tags = (await getAllTags()).slice(0, 20);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourname.dev';
 
   // 首页结构化数据 - CollectionPage

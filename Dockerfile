@@ -56,8 +56,19 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# 复制 Prisma schema（standalone 模式可能不包含）
+# 复制 Prisma schema 和生成的 Client（standalone 模式可能不包含）
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# 确保 node_modules 目录存在（standalone 模式应该已经创建了）
+# 如果 standalone 模式未包含 Prisma Client，则从 builder 阶段复制
+RUN mkdir -p node_modules/@prisma node_modules/.prisma
+
+# 复制 Prisma Client（standalone 模式应该已经包含，但显式复制以确保完整性）
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+
+# 复制国际化消息文件（运行时需要）
+COPY --from=builder --chown=nextjs:nodejs /app/messages ./messages
 
 USER nextjs
 
