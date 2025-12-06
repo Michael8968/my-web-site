@@ -10,6 +10,8 @@ WORKDIR /app
 
 # 复制依赖文件
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+# 复制 Prisma schema（postinstall 脚本需要）
+COPY prisma ./prisma
 # 安装依赖
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
