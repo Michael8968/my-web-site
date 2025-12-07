@@ -16,34 +16,45 @@ const configPath = path.join(__dirname, '..', 'next.config.js');
 // 所以如果检测到 CloudBase Framework 创建的简单 next.config.js，直接删除它
 function fixConfig() {
   const mjsConfigPath = path.join(__dirname, '..', 'next.config.mjs');
-  
+
   // 确保 next.config.mjs 存在
   if (!fs.existsSync(mjsConfigPath)) {
     console.error('❌ next.config.mjs 不存在！');
     process.exit(1);
   }
-  
+
   // 如果存在 next.config.js，检查并处理
   if (fs.existsSync(configPath)) {
     try {
       const content = fs.readFileSync(configPath, 'utf8').trim();
-      
+
       // 检查是否是 CloudBase Framework 创建的简单配置文件
       // 通常格式为: module.exports = { basePath: '/' }
-      const isSimpleConfig = 
+      const isSimpleConfig =
         content === "module.exports = { basePath: '/' }" ||
         content === 'module.exports = { basePath: "/" }' ||
-        (content.includes("basePath: '/'") && content.split('\n').length <= 3) ||
+        (content.includes("basePath: '/'") &&
+          content.split('\n').length <= 3) ||
         (content.includes('basePath: "/"') && content.split('\n').length <= 3);
-      
+
       if (isSimpleConfig) {
-        console.log('🔧 检测到 CloudBase Framework 创建的 next.config.js，正在删除...');
+        console.log(
+          '🔧 检测到 CloudBase Framework 创建的 next.config.js，正在删除...'
+        );
         fs.unlinkSync(configPath);
-        console.log('✅ 已删除 next.config.js（Next.js 将使用 next.config.mjs）');
-      } else if (content.includes("basePath: '/'") || content.includes('basePath: "/"')) {
+        console.log(
+          '✅ 已删除 next.config.js（Next.js 将使用 next.config.mjs）'
+        );
+      } else if (
+        content.includes("basePath: '/'") ||
+        content.includes('basePath: "/"')
+      ) {
         // 如果文件包含错误的 basePath，尝试修复
         console.log('🔧 检测到错误的 basePath 配置，正在修复...');
-        const fixed = content.replace(/basePath:\s*['"]\/['"]/g, "basePath: ''");
+        const fixed = content.replace(
+          /basePath:\s*['"]\/['"]/g,
+          "basePath: ''"
+        );
         fs.writeFileSync(configPath, fixed, 'utf8');
         console.log('✅ 已修复 next.config.js 中的 basePath 配置');
       } else {
@@ -81,4 +92,3 @@ try {
   console.error('❌ 构建失败');
   process.exit(1);
 }
-
