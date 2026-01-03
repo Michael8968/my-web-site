@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { Globe } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { locales, type Locale } from '@/i18n';
@@ -30,25 +30,8 @@ export function LanguageSwitcher() {
   }, []);
 
   const switchLocale = (newLocale: Locale) => {
-    // Remove current locale from pathname if present
-    let newPathname = pathname;
-
-    // Check if the pathname starts with a locale
-    for (const loc of locales) {
-      if (pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`) {
-        newPathname = pathname.replace(`/${loc}`, '') || '/';
-        break;
-      }
-    }
-
-    // Navigate to the new locale path
-    if (newLocale === 'zh') {
-      // Default locale doesn't need prefix
-      router.push(newPathname);
-    } else {
-      router.push(`/${newLocale}${newPathname}`);
-    }
-
+    // Use next-intl's router which handles locale switching automatically
+    router.replace(pathname, { locale: newLocale });
     setIsOpen(false);
   };
 
